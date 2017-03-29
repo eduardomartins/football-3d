@@ -1,18 +1,113 @@
-*.class
+# This file is used to ignore files which are generated
+# ----------------------------------------------------------------------------
 
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
+!core/
+*.*#
+*.a
+*.app
+*.autosave
+*.core
+*.debug
+*.embed.manifest
+*.moc
+*.o
+*.obj
+*.orig
+*.prl
+*.qm
+*.rc
+*.rej
+*.res
+*.so
+*.so.*
+*_pch.h.cpp
+*_resource.rc
+*_wrapper.bat
+*_wrapper.sh
+*~
+.#*
+.DS_Store
+/.qmake.cache
+/.qmake.stash
+Makefile*
+Thumbs.db
+core
+moc_*.cpp
+qrc_*.cpp
+tags
+ui_*.h
+wrapper.bat
+wrapper.sh
 
-# Package Files #
-*.jar
-*.war
-*.ear
+# qtcreator generated files
+*.creator.user*
+*.pro.user*
+*.pyqtc.user*
+*.qbs.user*
+*.qmlproject.user*
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
+# xemacs temporary files
+*.flc
 
-# Envoiriments stuffs
-.project
-.settings
-.classpath
-library/
+# Vim temporary files
+.*.swp
+
+# Visual Studio generated files
+*.ib_pdb_index
+*.idb
+*.ilk
+*.ncb
+*.opensdf
+*.pdb
+*.sdf
+*.sln
+*.suo
+*.vcproj
+*.vcxproj
+*vcproj.*.*.user
+*vcxproj.*
+
+# gcov files
+*.gcda
+*.gcno
+*.gcov
+
+# MinGW generated files
+*.Debug
+*.Release
+
+# Python byte code
+*.pyc
+
+# translation related:
+/share/qtcreator/translations/*_tr.h
+/share/qtcreator/translations/qtcreator_untranslated.ts
+
+# Qml caching files
+*.jsc
+*.qmlc
+
+# Directories to ignore
+# ---------------------
+
+.moc/
+.obj/
+.pch/
+.rcc/
+.uic/
+/*-debug/
+/*-release/
+debug/
+
+ipch/
+
+release/
+
+tmp/
+# ignore both a directory as well as a symlink
+/share/qtcreator/QtProject
+
+# Binaries
+# --------
+*.dll
+*.exe
