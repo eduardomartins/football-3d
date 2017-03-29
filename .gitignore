@@ -1,16 +1,14 @@
 # This file is used to ignore files which are generated
 # ----------------------------------------------------------------------------
 
-!core/
-*.*#
 *.a
 *.app
 *.autosave
-*.core
 *.debug
 *.embed.manifest
 *.moc
 *.o
+*.core
 *.obj
 *.orig
 *.prl
@@ -25,13 +23,12 @@
 *_wrapper.bat
 *_wrapper.sh
 *~
-.#*
+
 .DS_Store
 /.qmake.cache
 /.qmake.stash
 Makefile*
 Thumbs.db
-core
 moc_*.cpp
 qrc_*.cpp
 tags
