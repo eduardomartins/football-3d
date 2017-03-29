@@ -12,9 +12,17 @@ TARGET = water-simulation
 TEMPLATE = app
 
 
-SOURCES += main.cpp\
-        mainwindow.cpp
+SOURCES += src/main.cpp\
+        src/mainwindow.cpp \
+    src/core/vector3d.cpp \
+    src/core/kdtree.cpp \
+    src/engine/camera.cpp \
+    src/engine/scene.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += src/mainwindow.h \
+    src/core/vector3d.h \
+    src/core/kdtree.h \
+    src/engine/camera.h \
+    src/engine/scene.h
 
-FORMS    += mainwindow.ui
+FORMS += src/mainwindow.ui

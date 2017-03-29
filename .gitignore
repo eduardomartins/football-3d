@@ -80,9 +80,6 @@ wrapper.sh
 *.pyc
 
 # translation related:
-/share/qtcreator/translations/*_tr.h
-/share/qtcreator/translations/qtcreator_untranslated.ts
-
 # Qml caching files
 *.jsc
 *.qmlc
@@ -96,7 +93,9 @@ wrapper.sh
 .rcc/
 .uic/
 /*-debug/
+/*-Debug/
 /*-release/
+/*-Release/
 debug/
 
 ipch/
