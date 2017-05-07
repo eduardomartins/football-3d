@@ -89,9 +89,14 @@ float Vector3D::getZ(void) const{
 }
 
 
-
-
 // Operators
+
+Vector3D & Vector3D::operator =(const Vector3D &other){
+    this->setX(other.getX())->setY(other.getY())->setZ(other.getZ());
+    return *this;
+}
+
+
 float & Vector3D::operator [](int index){
     switch (index) {
     case 0:
@@ -228,4 +233,16 @@ QDebug operator<<(QDebug dbg, const Vector3D &other) {
     dbg.nospace() << "(" << other.getX() << ", " << other.getY() << ", " << other.getZ() << ")";
 
     return dbg.space();
+}
+
+Vector3D rotate(Vector3D v, Vector3D axis, float degrees) {
+    axis = axis.normalize();
+    float radians = degrees * PI / 180;
+    float s = sin(radians);
+    float c = cos(radians);
+    return v * c + axis * axis.dot(v) * (1 - c) + v.cross(axis) * s;
+}
+
+Vector3D adjParticlePos(Vector3D pos) {
+    return rotate(pos, Vector3D(1, 0, 0), -30);
 }

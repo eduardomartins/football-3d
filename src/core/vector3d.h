@@ -31,6 +31,9 @@
 #include <QDebug>
 
 
+const double PI = 3.14159265359;
+
+
 class Vector3D : public QObject
 {
     Q_OBJECT
@@ -65,6 +68,8 @@ public:
     Vector3D operator-(float scale) const;
     Vector3D operator-(const Vector3D &other) const;
 
+    Vector3D &operator=(const Vector3D &other);
+
     const Vector3D &operator+=(float scale);
     const Vector3D &operator-=(float scale);
     const Vector3D &operator*=(float scale);
@@ -92,6 +97,8 @@ private:
 
 QDebug operator<<(QDebug dbg, const Vector3D &other);
 
+Vector3D rotate(Vector3D v, Vector3D axis, float degrees);
 
+Vector3D adjParticlePos(Vector3D pos);
 
 #endif // VECTOR3D_H
