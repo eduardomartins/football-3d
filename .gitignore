@@ -2,6 +2,7 @@
 # ----------------------------------------------------------------------------
 
 *.a
+*.bin
 *.app
 *.autosave
 *.debug
@@ -23,6 +24,7 @@
 *_wrapper.bat
 *_wrapper.sh
 *~
+
 
 .DS_Store
 /.qmake.cache

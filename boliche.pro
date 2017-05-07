@@ -30,7 +30,7 @@ QT       += core gui opengl
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = water-simulation
+TARGET = boliche.bin
 TEMPLATE = app
 
 
@@ -55,7 +55,24 @@ HEADERS  += src/mainwindow.h \
     src/engine/character.h \
     src/engine/glwidget.h
 
+DESTDIR = bin
+OBJECTS_DIR = bin/.obj
+MOC_DIR = bin/.moc
+RCC_DIR = bin/.rcc
+UI_DIR = bin/.ui
+
+
+debug
+{
+    DESTDIR = bin/debug
+    OBJECTS_DIR = bin/debug/.obj
+    MOC_DIR = bin/debug/.moc
+    RCC_DIR = bin/debug/.rcc
+    UI_DIR = bin/debug/.ui
+}
+
 FORMS += src/mainwindow.ui
 
 
 LIBS += -lglut -lGLU
+
