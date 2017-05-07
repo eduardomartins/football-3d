@@ -26,7 +26,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-QT       += core gui
+QT       += core gui opengl
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -37,16 +37,25 @@ TEMPLATE = app
 SOURCES += src/main.cpp\
         src/mainwindow.cpp \
     src/core/vector3d.cpp \
-    src/core/kdtree.cpp \
     src/engine/camera.cpp \
     src/engine/scene.cpp \
-    src/core/particle.cpp
+    src/core/particle.cpp \
+    src/engine/phisics.cpp \
+    src/core/ball.cpp \
+    src/engine/character.cpp \
+    src/engine/glwidget.cpp
 
 HEADERS  += src/mainwindow.h \
     src/core/vector3d.h \
-    src/core/kdtree.h \
     src/engine/camera.h \
     src/engine/scene.h \
-    src/core/particle.h
+    src/core/particle.h \
+    src/engine/phisics.h \
+    src/core/ball.h \
+    src/engine/character.h \
+    src/engine/glwidget.h
 
 FORMS += src/mainwindow.ui
+
+
+LIBS += -lglut -lGLU
