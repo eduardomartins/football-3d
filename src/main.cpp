@@ -25,6 +25,9 @@
 #include "mainwindow.h"
 #include <QApplication>
 
+#include "src/core/vector3d.h"
+
+
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);

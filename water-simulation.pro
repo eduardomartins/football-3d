@@ -39,12 +39,14 @@ SOURCES += src/main.cpp\
     src/core/vector3d.cpp \
     src/core/kdtree.cpp \
     src/engine/camera.cpp \
-    src/engine/scene.cpp
+    src/engine/scene.cpp \
+    src/core/particle.cpp
 
 HEADERS  += src/mainwindow.h \
     src/core/vector3d.h \
     src/core/kdtree.h \
     src/engine/camera.h \
-    src/engine/scene.h
+    src/engine/scene.h \
+    src/core/particle.h
 
 FORMS += src/mainwindow.ui
