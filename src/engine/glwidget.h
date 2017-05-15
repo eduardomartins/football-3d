@@ -5,18 +5,33 @@
 #include <GL/glu.h>
 #include <GL/glut.h>
 
+#include <QDebug>
 #include <QWidget>
-#include <QOpenGLWidget>
+#include <QtOpenGL>
+#include <QGLWidget>
+#include <QMouseEvent>
 
 
+#include "scene.h"
 
-class GLWidget : public QOpenGLWidget
+
+class GLWidget : public QGLWidget
 {
+    Q_OBJECT
+
 public:
     explicit GLWidget(QWidget *parent = 0);
     ~GLWidget();
 
 public slots:
+    void setXRotation(int angle);
+    void setYRotation(int angle);
+    void setZRotation(int angle);
+
+signals:
+    void xRotationChanged(int angle);
+    void yRotationChanged(int angle);
+    void zRotationChanged(int angle);
 
 protected:
     void paintGL();
@@ -25,8 +40,20 @@ protected:
 
     void initializeGL();
 
-private:
+    void mousePressEvent(QMouseEvent *event);
 
+    void mouseMoveEvent(QMouseEvent *event);
+
+private:
+    Room *bowling;
+
+    QPoint lastPosition;
+
+    int xRot, yRot, zRot;
 };
+
+static int normalize(int delta);
+
+static void qNormalizeAngle(int &angle);
 
 #endif // GLWIDGET_H

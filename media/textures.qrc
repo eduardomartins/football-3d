@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>wood_texture.jpg</file>
+        <file>wood_texture.bmp</file>
+    </qresource>
+</RCC>

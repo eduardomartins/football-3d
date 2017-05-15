@@ -43,7 +43,8 @@ SOURCES += src/main.cpp\
     src/engine/phisics.cpp \
     src/core/ball.cpp \
     src/engine/character.cpp \
-    src/engine/glwidget.cpp
+    src/engine/glwidget.cpp \
+    src/engine/game.cpp
 
 HEADERS  += src/mainwindow.h \
     src/core/vector3d.h \
@@ -53,7 +54,8 @@ HEADERS  += src/mainwindow.h \
     src/engine/phisics.h \
     src/core/ball.h \
     src/engine/character.h \
-    src/engine/glwidget.h
+    src/engine/glwidget.h \
+    src/engine/game.h
 
 DESTDIR = bin
 OBJECTS_DIR = bin/.obj
@@ -75,4 +77,7 @@ FORMS += src/mainwindow.ui
 
 
 LIBS += -lglut -lGLU
+
+RESOURCES += \
+    media/textures.qrc
 

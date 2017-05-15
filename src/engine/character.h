@@ -9,6 +9,8 @@ class Character : public QObject
 public:
     explicit Character(QObject *parent = 0);
 
+
+
 signals:
 
 public slots:

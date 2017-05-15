@@ -28,3 +28,70 @@ Scene::Scene(QObject *parent) : QObject(parent)
 {
 
 }
+
+
+Room::Room(QObject *parent) : QObject(parent)
+  , cube {
+
+       // Piso
+{ { -1, -1, -1 }, { +1, -1, -1 }, { +1, -1, +1 }, { -1, -1, +1 } },
+
+       // Teto
+{ { -1, +1, -1 }, { +1, +1, -1 }, { +1, +1, +1 }, { -1, +1, +1 } },
+
+       // Paredes
+{ { -1, -1, +1 }, { +1, -1, +1 }, { +1, +1, +1 }, { -1, +1, +1 } },
+{ { -1, -1, -1 }, { +1, -1, -1 }, { +1, +1, -1 }, { -1, +1, -1 } },
+{ { +1, +1, +1 }, { +1, -1, +1 }, { +1, -1, -1 }, { +1, +1, -1 } },
+{ { -1, +1, +1 }, { -1, -1, +1 }, { -1, -1, -1 }, { -1, +1, -1 } },
+       }
+{
+   //memset(texture, 0, sizeof(texture));
+
+}
+
+
+Room::~Room()
+{
+    delete texture;
+    vbo.destroy();
+}
+
+
+void Room::draw() {
+    glColor3f(NORM_HEX(200), NORM_HEX(0), NORM_HEX(0));
+
+    glBegin(GL_QUADS);
+    for(int i = 0; i < 6; i++){
+        for(int j = 0; j < 4; j++){
+            glVertex3f(cube[i][j][0], cube[i][j][1], cube[i][j][2]);
+        }
+    }
+    glEnd();
+}
+
+
+void Room::drawTextures()
+{
+
+    texture = new QOpenGLTexture(QImage("://wood_texture.bmp").mirrored());
+
+    QVector<GLfloat> vertData;
+
+    for(int i = 0; i < 6; i++) {
+        for (int j = 0; j < 4; ++j) {
+            // vertex position
+            vertData.append(0.2 * cube[i][j][0]);
+            vertData.append(0.2 * cube[i][j][1]);
+            vertData.append(0.2 * cube[i][j][2]);
+            // texture coordinate
+            vertData.append(j == 0 || j == 3);
+            vertData.append(j == 0 || j == 1);
+        }
+    }
+
+    vbo.create();
+    vbo.bind();
+    vbo.allocate(vertData.constData(), vertData.count() * sizeof(GLfloat));
+
+}

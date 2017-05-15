@@ -25,7 +25,16 @@
 #ifndef SCENE_H
 #define SCENE_H
 
+#include <GL/gl.h>
+#include <GL/glu.h>
+
+#include <QVector>
 #include <QObject>
+#include <QOpenGLBuffer>
+#include <QOpenGLTexture>
+
+
+#define NORM_HEX(V) V/255.0
 
 class Scene : public QObject
 {
@@ -33,9 +42,35 @@ class Scene : public QObject
 public:
     explicit Scene(QObject *parent = 0);
 
+    //virtual void draw();
+
 signals:
 
 public slots:
+
+};
+
+
+class Room: public QObject {
+    Q_OBJECT
+
+public:
+
+    explicit Room(QObject *parent = 0);
+
+    ~Room();
+
+    void draw();
+
+    void drawTextures();
+
+private:
+
+    int cube[6][4][3];
+
+    QOpenGLTexture *texture;
+
+    QOpenGLBuffer vbo;
 };
 
 #endif // SCENE_H
