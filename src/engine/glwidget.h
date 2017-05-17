@@ -50,10 +50,11 @@ private:
     QPoint lastPosition;
 
     int xRot, yRot, zRot;
+
+    GLfloat mat_specular[4];
+    GLfloat mat_shininess[1];
+    GLfloat light_position[4];
 };
 
-static int normalize(int delta);
-
-static void qNormalizeAngle(int &angle);
 
 #endif // GLWIDGET_H
