@@ -1,7 +1,7 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include "src/core/ball.h"
+#include "src/ball.h"
 
 #include <QObject>
 

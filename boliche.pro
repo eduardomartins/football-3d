@@ -26,42 +26,58 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-QT       += core gui opengl
+
+QT += core
+QT += gui
+QT += opengl
+QT += widgets
+QT += multimedia multimediawidgets
+
+QMAKE_CXXFLAGS += -std=c++11
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = boliche.bin
+
 TEMPLATE = app
 
+LIBS += -lGLU -lGL
+
+QT_DEBUG_PLUGINS = 1
 
 SOURCES += src/main.cpp\
         src/mainwindow.cpp \
-    src/core/vector3d.cpp \
+    src/vector3d.cpp \
+    src/ball.cpp \
+    src/particle.cpp \
     src/engine/camera.cpp \
     src/engine/scene.cpp \
-    src/core/particle.cpp \
     src/engine/phisics.cpp \
-    src/core/ball.cpp \
-    src/engine/character.cpp \
     src/engine/glwidget.cpp \
-    src/engine/game.cpp
+    src/engine/game.cpp \
+    src/engine/mouse3d.cpp \
+    src/engine/spnav.c \
+    src/engine/object.cpp
 
 HEADERS  += src/mainwindow.h \
-    src/core/vector3d.h \
+    src/particle.h \
+    src/ball.h \
+    src/vector3d.h \
     src/engine/camera.h \
     src/engine/scene.h \
-    src/core/particle.h \
     src/engine/phisics.h \
-    src/core/ball.h \
-    src/engine/character.h \
     src/engine/glwidget.h \
-    src/engine/game.h
+    src/engine/game.h \
+    src/engine/mouse3d.h \
+    src/engine/spnav.h \
+    src/engine/object.h \
+    src/utils.h
 
 DESTDIR = bin
 OBJECTS_DIR = bin/.obj
 MOC_DIR = bin/.moc
 RCC_DIR = bin/.rcc
-UI_DIR = bin/.ui
+UI_DIR = .ui
 
 
 debug
@@ -70,13 +86,12 @@ debug
     OBJECTS_DIR = bin/debug/.obj
     MOC_DIR = bin/debug/.moc
     RCC_DIR = bin/debug/.rcc
-    UI_DIR = bin/debug/.ui
+    UI_DIR = .ui
 }
 
 FORMS += src/mainwindow.ui
 
 
-LIBS += -lglut -lGLU
 
 RESOURCES += \
     media/textures.qrc

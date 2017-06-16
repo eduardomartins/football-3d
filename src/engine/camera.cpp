@@ -1,32 +1,97 @@
-/*
- * MIT License
- *
- * Copyright (c) 2017 Eduardo Sant'Anna Martins <eduardo@eduardomartins.site>
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
-
 #include "camera.h"
-
-
-
-Camera::Camera(QObject *parent) : QObject(parent)
-{
-
+#include <cmath>
+#include <QVector3D>
+#include <GL/glu.h>
+Camera::Camera(){
+    x = 0.0;
+    y = 0.0;
+    z = 0.0;
+    centerx = 0;
+    centery = 0;
+    centerz = 0;
+    angle = 0.0;
+    anglev = 0.0;
+    fovy = 1.0;
+    radius = 100.0;
+    Camera::updatePosition();
 }
+void Camera::setCenter(float cx, float cy, float cz) {
+    centerx = cx;
+    centery = cy;
+    centerz = cz;
+}
+float Camera::cosine(long double ang)
+{
+    return (float) std::cos(ang*M_PI/180);
+}
+
+float Camera::sine(long double ang)
+{
+    return (float) std::sin(ang*M_PI/180);
+}
+
+void Camera::setAngle(GLfloat angle){
+    this->angle = angle;
+    Camera::updatePosition();
+}
+
+void Camera::setAngleV(GLfloat anglev){
+    this->anglev = anglev;
+    Camera::updatePosition();
+}
+
+void Camera::setRadius(GLfloat radius){
+    this->radius = radius;
+    Camera::updatePosition();
+}
+
+void Camera::updatePosition(){
+    radiusb = radius * cosine(anglev);
+    if (angle <= 90){
+        x = radiusb* Camera::cosine(angle) + centerx;
+        z = radiusb* Camera::sine(angle) + centerz;
+    }
+    else if (angle > 90 && angle <= 180){
+        x = -1*(radiusb* Camera::sine(angle - 90)) + centerx;
+        z = radiusb* Camera::cosine(angle - 90) + centerz;
+    }
+    else if (angle > 180 && angle <= 270){
+        x = -1*(radiusb* Camera::cosine(angle - 180)) + centerx;
+        z = -1*(radiusb* Camera::sine(angle - 180)) + centerz;
+    }
+    else if (angle > 270 && angle <= 360){
+        x = radiusb* Camera::sine(angle - 270) + centerx;
+        z = -1*(radiusb* Camera::cosine(angle - 270)) + centerz;
+    }
+    if (anglev <= -90) anglev = -89;
+    else if (anglev >= 90) anglev = 89;
+    y = radius * sine(anglev) + centery;
+    Camera::setConfig();
+}
+
+void Camera::setConfig()
+{
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluPerspective(50.0*fovy, (GLfloat) view_w/(GLfloat) view_h, 0.1, 10000.0);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    gluLookAt(x, y, z, centerx, centery, centerz, 0.0, 1.0, 0.0);
+    glLightModelf(GL_LIGHT_MODEL_AMBIENT, 1);
+
+    GLfloat pos[4] = {x,y,z,0.0};
+    glLightfv(GL_LIGHT0, GL_POSITION, pos);
+}
+
+void Camera::setViewport(int w, int h) {
+    view_w = w;
+    view_h = h;
+    glViewport(0, 0, (GLsizei) view_w, (GLsizei) view_h);
+    Camera::setConfig();
+}
+
+void Camera::setFovy(GLfloat fovy) {
+    this->fovy = fovy;
+    Camera::setConfig();
+}
+

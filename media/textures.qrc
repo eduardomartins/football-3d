@@ -1,5 +1,13 @@
 <RCC>
     <qresource prefix="/">
-        <file>wood_texture.bmp</file>
+        <file>textures/pastilha.jpg</file>
+        <file>textures/grass.jpg</file>
+        <file>textures/propoganda.jpeg</file>
+        <file>textures/skyline.jpg</file>
+        <file>textures/selectblend.png</file>
+        <file>textures/terrain.jpg</file>
+        <file>textures/crowd.jpg</file>
+        <file>textures/spfc.jpg</file>
+        <file>textures/csc.jpg</file>
     </qresource>
 </RCC>

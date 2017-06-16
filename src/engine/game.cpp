@@ -1,6 +1,6 @@
 #include "game.h"
 
-
+/*
 namespace {
     const float PI = 3.1415926535f;
 
@@ -33,7 +33,7 @@ namespace {
     float randomFloat() {
         return (float)rand() / ((float)RAND_MAX + 1);
     }
-}
+}*/
 
 
 Game::Game(QObject *parent) : QObject(parent)

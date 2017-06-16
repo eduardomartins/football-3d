@@ -25,7 +25,23 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "engine/glwidget.h"
+
+#include <QTimer>
 #include <QMainWindow>
+
+
+typedef enum {
+    W = 87,
+    S = 83,
+    ENTER = 16777220,
+    LEFT = 16777234,
+    UP = 16777235,
+    RIGHT = 16777236,
+    DOWN = 16777237,
+
+
+} moveButtons;
 
 namespace Ui {
 class MainWindow;
@@ -39,7 +55,30 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+    bool started;
+
+    void updateLCD(int seconds);
+
+
+public slots:
+    void updateTimerCount();
+
+protected:
+    void keyPressEvent(QKeyEvent* event);
+    virtual bool eventFilter(QObject *, QEvent *);
+
+signals:
+    void buttonMovePressP1(int);
+    void buttonMovePressP2(int);
+
+    void buttonStart();
+    void matchIsOver();
+
 private:
+
+    int counter;
+
+    QTimer *timer;
     Ui::MainWindow *ui;
 };
 

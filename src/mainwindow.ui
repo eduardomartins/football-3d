@@ -6,47 +6,199 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>642</width>
+    <height>509</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Projeto de C.G. - Boliche</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">* {
-	background-color: black;
-	color: rgb(41,196,91);
-}</string>
+   <string notr="true"/>
   </property>
-  <widget class="GLWidget" name="centralWidget">
-   <layout class="QGridLayout" name="gridLayout"/>
+  <widget class="QWidget" name="centralWidget">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <layout class="QGridLayout" name="gridLayoutBarra">
+      <item row="0" column="0">
+       <widget class="QLabel" name="labelStatus">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>14</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Precione o botão ESPAÇO para começar o jogo</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLabel" name="labelJogador1">
+        <property name="font">
+         <font>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Jogador 1</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QLCDNumber" name="lcdNumber1">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>50</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="digitCount">
+         <number>3</number>
+        </property>
+        <property name="value" stdset="0">
+         <double>0.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="7">
+       <widget class="QLCDNumber" name="lcdNumberSeg">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>50</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="digitCount">
+         <number>2</number>
+        </property>
+        <property name="value" stdset="0">
+         <double>0.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <widget class="QLabel" name="labelJogador2">
+        <property name="font">
+         <font>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Jogador 2</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="5">
+       <widget class="QLabel" name="labelTempo">
+        <property name="text">
+         <string>Tempo</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="4">
+       <widget class="QLCDNumber" name="lcdNumber1_2">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>50</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="digitCount">
+         <number>3</number>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="6">
+       <widget class="QLCDNumber" name="lcdNumberMin">
+        <property name="digitCount">
+         <number>2</number>
+        </property>
+        <property name="value" stdset="0">
+         <double>5.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="GLWidget" name="openGLWidget">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+     </widget>
+    </item>
+   </layout>
   </widget>
-  <widget class="QStatusBar" name="statusBar"/>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>400</width>
+     <width>642</width>
      <height>19</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuConfigura_es">
+   <widget class="QMenu" name="menuConfigura_o">
     <property name="title">
      <string>Configurações</string>
     </property>
+    <addaction name="actionAudio"/>
    </widget>
-   <addaction name="menuConfigura_es"/>
+   <addaction name="menuConfigura_o"/>
   </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+  <action name="actionAudio">
+   <property name="text">
+    <string>Audio</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
    <class>GLWidget</class>
-   <extends>QWidget</extends>
+   <extends>QOpenGLWidget</extends>
    <header>src/engine/glwidget.h</header>
-   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>

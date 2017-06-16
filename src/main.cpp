@@ -23,14 +23,12 @@
  */
 
 #include "mainwindow.h"
-#include <QApplication>
-#include <GL/glut.h>
-#include "src/core/vector3d.h"
 
+#include <QApplication>
+#include <QOpenGLFunctions>
 
 int main(int argc, char *argv[])
 {
-    glutInit(&argc, argv);
     QApplication a(argc, argv);
     MainWindow w;
     w.show();

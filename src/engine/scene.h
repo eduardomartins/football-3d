@@ -25,79 +25,130 @@
 #ifndef SCENE_H
 #define SCENE_H
 
+#include "object.h"
+
+
 #include <GL/gl.h>
 #include <GL/glu.h>
-#include <assert.h>
+
 #include <fstream>
+#include <assert.h>
 
 
+#include <QMap>
 #include <QVector>
 #include <QObject>
 #include <QOpenGLBuffer>
 #include <QOpenGLTexture>
-
+#include <QGenericMatrix>
 
 #define NORM_HEX(V) V/255.0
 
-class Image {
-    public:
-        Image(char* ps, int w, int h);
-        ~Image();
 
-        /* An array of the form (R1, G1, B1, R2, G2, B2, ...) indicating the
-         * color of each pixel in image.  Color components range from 0 to 255.
-         * The array starts the bottom-left pixel, then moves right to the end
-         * of the row, then moves up to the next column, and so on.  This is the
-         * format in which OpenGL likes images.
-         */
-        char* pixels;
-        int width;
-        int height;
-};
-
-class Scene : public QObject
-{
-    Q_OBJECT
-public:
-    explicit Scene(QObject *parent = 0);
-
-    //virtual void draw();
-
-signals:
-
-public slots:
-
-};
-
-
-class Room: public QObject {
-    Q_OBJECT
-
+class Room: public Object {
 public:
 
-    explicit Room(QObject *parent = 0);
+    explicit Room(float = 100.0, float = 100.0, float = 100.0);
 
     ~Room();
 
-    void draw();
+    typedef enum {
+        DIREITA  = 0,
+        TETO     = 1,
+        FRENTE   = 2,
+        ESQUERDA = 3,
+        PISO     = 4,
+        FUNDO    = 5,
+    } PARTES;
 
-    void drawTextures();
+    void draw();
+    void clearTexture();
+    void drawTexture(Room::PARTES);
+    QString getTexturePath(Room::PARTES);
+    void setTexture(QString, Room::PARTES);
+
 
 private:
 
     float cube[6][4][3];
-    float colors[6][3];
+    float textureCoord[6][4][2];
+    float base, largura, altura;
 
-   GLuint texture;
-   Image *image;
+    PARTES faces[6];
+    QMap<PARTES, QString> textures_paths;
+    QMap<PARTES, QOpenGLTexture *> textures;
 
-    QOpenGLBuffer vbo;
+
+};
+
+class Campo: public Object {
+public:
+
+    explicit Campo(float = 100.0, float = 100.0, QString = "");
+
+    ~Campo();
+
+    void draw();
+
+
+private:
+
+    float coordenates[4][3];
+    float base, largura;
+
+};
+
+class Floor: public Object {
+public:
+
+    explicit Floor(float = 100.0, float = 100.0, QString = "");
+
+    ~Floor();
+
+    void draw();
+
+
+private:
+
+    float coordenates[4][3];
+    float base, largura;
+
+};
+
+class Crowd: public Object {
+public:
+
+    explicit Crowd(float = 100.0, float = 100.0, QString = "");
+
+    ~Crowd();
+
+    void draw();
+
+
+private:
+
+    float coordenates[4][3];
+    float base, largura;
+    int count;
+
+};
+
+class Player: public Object {
+public:
+
+    explicit Player(float = 100.0, float = 100.0, float = 100, QString = "");
+
+    ~Player();
+
+    void draw(float = 0.0, float = 0.0, float = 0.0);
+
+
+private:
+
+    float coordenates[6][4][3];
+    float base, largura, altura;
 };
 
 
-//Reads a bitmap image from file.
-Image* loadBMP(const char* filename);
-
-GLuint loadTexture(Image* image);
 
 #endif // SCENE_H
