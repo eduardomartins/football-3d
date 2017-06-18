@@ -56,28 +56,27 @@ public:
     ~MainWindow();
 
     bool started;
-
     void updateLCD(int seconds);
 
 
 public slots:
+
+    void addGoalLCD(int);
     void updateTimerCount();
 
 protected:
+
     void keyPressEvent(QKeyEvent* event);
-    virtual bool eventFilter(QObject *, QEvent *);
 
 signals:
-    void buttonMovePressP1(int);
-    void buttonMovePressP2(int);
 
+    void buttonMovePress(int);
     void buttonStart();
     void matchIsOver();
 
 private:
 
     int counter;
-
     QTimer *timer;
     Ui::MainWindow *ui;
 };

@@ -26,6 +26,7 @@
 #define SCENE_H
 
 #include "object.h"
+#include "vector3d.h"
 
 
 #include <GL/gl.h>
@@ -42,13 +43,16 @@
 #include <QOpenGLTexture>
 #include <QGenericMatrix>
 
+
 #define NORM_HEX(V) V/255.0
 
 
-class Room: public Object {
+class Room: public Object
+{
+    Q_OBJECT
 public:
 
-    explicit Room(float = 100.0, float = 100.0, float = 100.0);
+    explicit Room(float = 0.0, float = 0.0, float = 0.0, QObject *p = 0);
 
     ~Room();
 
@@ -62,6 +66,7 @@ public:
     } PARTES;
 
     void draw();
+
     void clearTexture();
     void drawTexture(Room::PARTES);
     QString getTexturePath(Room::PARTES);
@@ -81,12 +86,12 @@ private:
 
 };
 
-class Campo: public Object {
+class Campo: public Object
+{
+    Q_OBJECT
 public:
 
-    explicit Campo(float = 100.0, float = 100.0, QString = "");
-
-    ~Campo();
+    explicit Campo(float = 100.0, float = 100.0, QString = "", QObject *p = 0);
 
     void draw();
 
@@ -98,12 +103,11 @@ private:
 
 };
 
-class Floor: public Object {
+class Floor: public Object
+{
+    Q_OBJECT
 public:
-
-    explicit Floor(float = 100.0, float = 100.0, QString = "");
-
-    ~Floor();
+    explicit Floor(float = 100.0, float = 100.0, QString = "", QObject *p = 0);
 
     void draw();
 
@@ -115,40 +119,78 @@ private:
 
 };
 
-class Crowd: public Object {
+class Crowd: public Object
+{
+    Q_OBJECT
 public:
 
-    explicit Crowd(float = 100.0, float = 100.0, QString = "");
-
-    ~Crowd();
+    explicit Crowd(float = 100.0, float = 100.0, QString = "", QObject *p = 0);
 
     void draw();
 
-
 private:
 
-    float coordenates[4][3];
-    float base, largura;
     int count;
+    float base, largura;
+    float coordenates[4][3];
 
 };
 
-class Player: public Object {
+class Player: public Object
+{
+    Q_OBJECT
 public:
 
-    explicit Player(float = 100.0, float = 100.0, float = 100, QString = "");
+    explicit Player(float = 100.0, float = 100.0, float = 100.0, int id = 0, QObject *p = 0);
 
-    ~Player();
+    void setId(int);
 
-    void draw(float = 0.0, float = 0.0, float = 0.0);
+    int getId();
 
+    void draw();
+
+signals:
+    void defendeBall(float, float);
+    void takeGoal(int);
+
+public slots:
+    void movePlayer(int);
+    void ballOnGoal(float, float, float);
 
 private:
 
+    int id;
     float coordenates[6][4][3];
     float base, largura, altura;
 };
 
+class Ball: public Object
+{
+    Q_OBJECT
+public:
+    explicit Ball(float = 100.0, QString = "", QObject *p = 0);
 
+    void draw();
+
+    Vector3D velocidade;
+
+    void start(int = -1);
+
+public slots:
+
+    void ballWasDefended(float x, float y);
+    void repositBall(int id);
+
+signals:
+    void onGoal(float, float, float);
+
+private:
+
+    void updatePosition();
+
+    float raio;
+    GLUquadricObj *quadric;
+
+};
 
 #endif // SCENE_H

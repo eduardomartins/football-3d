@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>642</width>
+    <width>898</width>
     <height>509</height>
    </rect>
   </property>
@@ -14,7 +14,10 @@
    <string>Projeto de C.G. - Boliche</string>
   </property>
   <property name="styleSheet">
-   <string notr="true"/>
+   <string notr="true"> * {
+	color: #FEFEFE;
+	background-color: #555;
+}</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -30,7 +33,8 @@
         </property>
         <property name="font">
          <font>
-          <pointsize>14</pointsize>
+          <family>Ubuntu</family>
+          <pointsize>16</pointsize>
           <weight>75</weight>
           <bold>true</bold>
          </font>
@@ -47,12 +51,14 @@
        <widget class="QLabel" name="labelJogador1">
         <property name="font">
          <font>
+          <family>Ubuntu</family>
+          <pointsize>11</pointsize>
           <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>
         <property name="text">
-         <string>Jogador 1</string>
+         <string>São Paulo</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
@@ -107,12 +113,13 @@
        <widget class="QLabel" name="labelJogador2">
         <property name="font">
          <font>
+          <family>Ubuntu</family>
           <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>
         <property name="text">
-         <string>Jogador 2</string>
+         <string>Corinthans</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
@@ -121,13 +128,21 @@
       </item>
       <item row="0" column="5">
        <widget class="QLabel" name="labelTempo">
+        <property name="font">
+         <font>
+          <family>Ubuntu</family>
+          <pointsize>11</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
         <property name="text">
          <string>Tempo</string>
         </property>
        </widget>
       </item>
       <item row="0" column="4">
-       <widget class="QLCDNumber" name="lcdNumber1_2">
+       <widget class="QLCDNumber" name="lcdNumber2">
         <property name="minimumSize">
          <size>
           <width>0</width>
@@ -151,7 +166,7 @@
          <number>2</number>
         </property>
         <property name="value" stdset="0">
-         <double>5.000000000000000</double>
+         <double>0.000000000000000</double>
         </property>
        </widget>
       </item>
@@ -168,23 +183,6 @@
      </widget>
     </item>
    </layout>
-  </widget>
-  <widget class="QMenuBar" name="menuBar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>642</width>
-     <height>19</height>
-    </rect>
-   </property>
-   <widget class="QMenu" name="menuConfigura_o">
-    <property name="title">
-     <string>Configurações</string>
-    </property>
-    <addaction name="actionAudio"/>
-   </widget>
-   <addaction name="menuConfigura_o"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionAudio">

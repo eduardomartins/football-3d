@@ -1,7 +1,7 @@
 #ifndef GLWIDGET_H
 #define GLWIDGET_H
 
-
+#include "game.h"
 #include "scene.h"
 #include "camera.h"
 #include "object.h"
@@ -51,6 +51,8 @@ public:
 
     bool default_light;
 
+    Player *player1, *player2;
+
 public slots:
 
     void setAngle(int);
@@ -60,15 +62,12 @@ public slots:
     void startMatch();
     void finishMatch();
 
-    void movePlayer1(int);
-    void movePlayer2(int);
-
-
 signals:
 
     void angleChanged(int);
     void angleVChanged(int);
     void radiusChanged(int);
+
 
 protected:
 
@@ -79,6 +78,7 @@ protected:
     void wheelEvent(QWheelEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
     void button(int bnum, int bpress);
+
 
 private:
 
@@ -120,15 +120,14 @@ private:
     bool light_used[LIGHT_LIMIT];
     bool lock, started;
 
-    float player1_x, player2_x;
-
-    Room *room;
+    Game *game;
+    Ball *ball;
     Floor *floor;
     Campo *campo;
     Crowd *torcida;
+    Room *room, *stadium;
     GLUquadricObj *quadric;
     QOpenGLTexture *texture;
-    Player *player1, *player2;
 
 };
 

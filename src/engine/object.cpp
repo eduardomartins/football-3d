@@ -1,93 +1,36 @@
 #include "object.h"
 
-#include <cmath>
-#include <ctime>
-#include <GL/gl.h>
-#include <stdlib.h>
-#include <GL/glu.h>
 
-#include <QMessageBox>
-#include <QDebug>
-
-
-Object::Object(GLfloat X, GLfloat Y, GLfloat Z)
+Object::Object(QObject *p):
+    QObject(p)
 {
-
-    x = X;
-    y = Y;
-    z = Z;
-
-    scale_x = 1;
-    scale_y = 1;
-    scale_z = 1;
-
-    rotate_x = 0;
-    rotate_y = 0;
-    rotate_z = 0;
-
     texture = NULL;
     texture_path = "";
+    position = Vector3D(0.0, 0.0, 0.0);
 }
 
-void Object::setScale(GLfloat sx,GLfloat sy,GLfloat sz){
-    if(sx > 0 && sy > 0 && sz > 0) {
-        scale_x = sx;
-        scale_y = sy;
-        scale_z = sz;
-    }
-    glScalef(scale_x, scale_y, scale_z);
-}
-
-
-void Object::setPosX(GLfloat x)
+Object::Object(float x, float y, float z, QObject *p):
+    QObject(p)
 {
-    this->x = x;
+    texture = NULL;
+    texture_path = "";
+    position = Vector3D(x, y, z);
 }
 
-void Object::setPosY(GLfloat y)
-{
-    this->y = y;
-}
 
-void Object::setPosZ(GLfloat z)
+Object::~Object()
 {
-    this->z = z;
-}
-
-void Object::setRotX(GLfloat rotx)
-{
-    rotate_x = rotx;
-}
-
-void Object::setRotY(GLfloat roty)
-{
-    rotate_y = roty;
-}
-
-void Object::setRotZ(GLfloat rotz)
-{
-    rotate_z = rotz;
-}
-
-void Object::getRot(float &rx, float &ry, float &rz)
-{
-    rx = rotate_x;
-    ry = rotate_y;
-    rz = rotate_z;
-}
-
-void Object::getPos(float &px, float &py, float &pz)
-{
-    px = x;
-    py = y;
-    pz = z;
+    delete texture;
 }
 
 
 void Object::setTexture(QString image_path)
 {
-    texture_path = image_path;
-    texture = new QOpenGLTexture(QImage(image_path).mirrored());
+    if(image_path != "")
+    {
+        texture_path = image_path;
+        texture = new QOpenGLTexture(QImage(image_path).mirrored());
+    }
 }
 
 void Object::clearTexture()
@@ -102,29 +45,32 @@ QString Object::getTexturePath()
     return texture_path;
 }
 
-void Object::setColorRGB(float r, float g, float b)
+void Object::locked()
 {
-
-    this->r = (GLfloat) (this->r + r);
-    this->g = (GLfloat) (this->g + g);
-    this->b = (GLfloat) (this->b + b);
-
-    while (this->r > 255.0)
-        this->r = (GLfloat) (this->r - 255.0);
-
-    while (this->g > 255.0)
-        this->g = (GLfloat) (this->g - 255.0);
-
-    while (this->b > 255.0)
-        this->b = (GLfloat) (this->b - 255.0);
+    v_lock = true;
 }
 
-void Object::getColorRGB(float &r, float &g, float &b)
+
+void Object::unlocked()
 {
-    r = this->r;
-    g = this->g;
-    b = this->b;
+    v_lock = false;
 }
+
+void Object::locked(bool v)
+{
+    v_lock = v;
+}
+
+void Object::setLock(bool v)
+{
+    v_lock = v;
+}
+
+bool Object::lock()
+{
+    return v_lock;
+}
+
 
 void Object::drawTexture(){
     if(texture != NULL){
@@ -147,23 +93,3 @@ void Object::drawTexture(){
     }
 }
 
-
-void Object::rotateXY(float degree) {
-    glRotatef(degree, 1, 0, 0);
-    glFlush();
-}
-
-void Object::rotateXZ(float degree) {
-    glRotatef(degree, 0, 0, 1);
-    glFlush();
-}
-
-void Object::rotateYZ(float degree) {
-    glRotatef(degree, 0, 1, 0);
-    glFlush();
-}
-
-void Object::translate(float x, float y, float z) {
-    glTranslatef(x, y, z);
-    glFlush();
-}

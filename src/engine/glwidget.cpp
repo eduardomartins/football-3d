@@ -9,9 +9,21 @@ GLWidget::GLWidget(QWidget *parent)
     QSurfaceFormat format;
     format.setDepthBufferSize(24);
     setFormat(format);
+
     lock = true;
-    player1_x = 0.0;
-    player2_x = 0.0;
+
+    camera = Camera();
+    ball = new Ball(60.0);
+    floor = new Floor(7200.0, 7200.0);
+    campo = new Campo(1100.0, 1700.0);
+    torcida = new Crowd(1100.0, 1900.0);
+    room = new Room(1200.0, 1800.0, 100.0);
+    stadium = new Room(3500.0, 3600.0, 800.0);
+    player1 = new Player(200.0, 30.0, 100.0, 1);
+    player2 = new Player(200.0, 30.0, 100.0, 2);
+
+    game = new Game(player2, ball);
+
 }
 
 GLWidget::~GLWidget()
@@ -19,9 +31,7 @@ GLWidget::~GLWidget()
     mouse3d->stop();
     mouse3d->wait();
     delete room;
-    //delete floor;
     delete texture;
-    //delete quadric;
 }
 
 void GLWidget::resizeGL(int w, int h)
@@ -82,21 +92,28 @@ void GLWidget::initializeGL()
     mouse3d->start();
 }
 
-void GLWidget::startMatch(){
+void GLWidget::startMatch()
+{
     angle = 0.0;
-    anglev = 90.0;
+    anglev = 65.0;
+    radius = 3000;
 
-    if(lock) {
-        lock = false;
-    } else {
-        lock = true;
-    }
+    lock = (lock ? false : true);
+
+    ball->setLock(lock);
+
+    player1->setLock(lock);
+    player2->setLock(lock);
+
 
 }
 
-void GLWidget::finishMatch(){
+void GLWidget::finishMatch()
+{
     angle = 45.0;
     anglev = 30.0;
+
+    ball->position.setX(0.0)->setY(0.0);
 
     lock = true;
 }
@@ -104,7 +121,6 @@ void GLWidget::finishMatch(){
 
 void GLWidget::draw()
 {
-
     // Dome
     glPushMatrix();
     glEnable(GL_TEXTURE_2D);
@@ -117,6 +133,7 @@ void GLWidget::draw()
     glRotatef(rotate, 0.0f, 0.0f, 1.0f);
 
     rotate += 0.02;
+    rotate *= 1.0001;
 
     if (rotate > 360)
         rotate = 0.1;
@@ -124,7 +141,7 @@ void GLWidget::draw()
     gluQuadricDrawStyle(quadric, GLU_FILL);
     gluQuadricTexture(quadric, GL_TRUE);
     gluQuadricNormals(quadric, GLU_SMOOTH);
-    gluSphere(quadric, 5100, 60, 60);
+    gluSphere(quadric, 7100, 60, 60);
     glFlush();
     glPopMatrix();
     glFlush();
@@ -132,37 +149,6 @@ void GLWidget::draw()
 
     // Display
 
-
-}
-
-
-void GLWidget::movePlayer1(int sentido)
-{
-    if (!lock) {
-        player1_x += (sentido * 25.0);
-        qDebug() << "P1" << player1_x;
-
-        if (player1_x > 875)
-            player1_x = 875;
-
-        if (player1_x < -875)
-            player1_x = -875;
-
-    }
-}
-
-void GLWidget::movePlayer2(int sentido)
-{
-    if (!lock) {
-        player2_x += (sentido * 25.0);
-        qDebug() << "P2" << player2_x;
-
-        if (player2_x > 875)
-            player2_x = 875;
-
-        if (player2_x < -875)
-            player2_x = -875;
-    }
 }
 
 
@@ -179,7 +165,8 @@ void GLWidget::paintGL()
 
 void GLWidget::init()
 {
-    room = new Room(1200.0, 1800.0, 100.0);
+
+    texture = new QOpenGLTexture(QImage(QString(":/textures/skyline.jpg")).mirrored());
 
     room->setTexture(QString(":/textures/pastilha.jpg"), Room::PISO);
     room->setTexture(QString(":/textures/propoganda.jpeg"), Room::FRENTE);
@@ -187,28 +174,48 @@ void GLWidget::init()
     room->setTexture(QString(":/textures/propoganda.jpeg"), Room::DIREITA);
     room->setTexture(QString(":/textures/propoganda.jpeg"), Room::ESQUERDA);
 
+    stadium->setTexture(QString(":/textures/pastilha.jpg"), Room::PISO);
+    stadium->setTexture(QString(":/textures/arch.jpg"), Room::FRENTE);
+    stadium->setTexture(QString(":/textures/arch.jpg"), Room::FUNDO);
+    stadium->setTexture(QString(":/textures/arch.jpg"), Room::DIREITA);
+    stadium->setTexture(QString(":/textures/arch.jpg"), Room::ESQUERDA);
 
-    campo = new Campo(1100.0, 1700.0, QString(":/textures/grass.jpg"));
+    stadium->position.setZ(100.0);
 
-    floor = new Floor(5200.0, 5200.0, QString(":/textures/terrain.jpg"));
 
-    torcida = new Crowd(1100.0, 1700.0, QString(":/textures/crowd.jpg"));
+    campo->setTexture(QString(":/textures/grass.jpg"));
+    player1->setTexture(QString(":/textures/spfc.jpg"));
+    player2->setTexture(QString(":/textures/csc.jpg"));
+    ball->setTexture(QString(":/textures/adidas_ball.jpg"));
+    floor->setTexture(QString(":/textures/terrain.jpg"));
+    torcida->setTexture(QString(":/textures/crowd.jpg"));
 
-    player1 = new Player(200.0, 30.0, 100.0, QString(":/textures/spfc.jpg"));
+    floor->position.setX(0.0)->setY(20.0)->setZ(0.0);
 
-    player2 = new Player(200.0, 30.0, 100.0, QString(":/textures/csc.jpg"));
+    player1->position.setX(0.0)->setY(+1500.0)->setZ(+75.0);
+
+    player2->position.setX(0.0)->setY(-1500.0)->setZ(+75.0);
+
+    room->position.setX(0.0)->setY(90.0)->setZ(0.0);
+
+    ball->position.setZ(75.0);
+
+    ball->start();
+
+    connect(ball, SIGNAL(onGoal(float,float,float)), player1, SLOT(ballOnGoal(float,float,float)));
+    connect(ball, SIGNAL(onGoal(float,float,float)), player2, SLOT(ballOnGoal(float,float,float)));
+    connect(player1, SIGNAL(defendeBall(float,float)), ball, SLOT(ballWasDefended(float, float)));
+    connect(player2, SIGNAL(defendeBall(float,float)), ball, SLOT(ballWasDefended(float, float)));
+    connect(player1, SIGNAL(takeGoal(int)), ball, SLOT(repositBall(int)));
+    connect(player2, SIGNAL(takeGoal(int)), ball, SLOT(repositBall(int)));
 
     quadric = gluNewQuadric();
-
-    texture = new QOpenGLTexture(QImage(QString(":/textures/skyline.jpg")).mirrored());
-
-    camera = Camera();
 
     angle = 45.0;
     anglev = 30.0;
     fovy = 1.0;
     radius = 4000;
-    max_radius = 4500;
+    max_radius = 7000;
 
     rotate = 1.0;
 
@@ -246,18 +253,18 @@ void GLWidget::drawPrimitive()
 
     draw();
 
+    player1->setLock(lock);
+    player2->setLock(lock);
+    ball->setLock(lock);
+
     floor->draw();
-    floor->translate(0.0, 20.0, 0.0);
-
     campo->draw();
-
-    room->translate(0.0, 90.0, 0.0);
     room->draw();
-
+    stadium->draw();
     torcida->draw();
-
-    player2->draw(player2_x, -1500.0, 0.0);
-    player1->draw(player1_x, +1500.0, 0.0);
+    player2->draw();
+    player1->draw();
+    ball->draw();
 
     update();
 }

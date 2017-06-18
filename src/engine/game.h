@@ -1,25 +1,34 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include "src/ball.h"
-
+#include "scene.h"
+#include <QTimer>
 #include <QObject>
 
 class Game : public QObject
 {
     Q_OBJECT
 public:
-    explicit Game(QObject *parent = 0);
+    explicit Game(Player *player, Ball *ball, QObject *parent = 0);
+    ~Game();
 
-    void handleCollitions();
+public slots:
+    void updateGame();
 
 signals:
+    void updatePlayer(int);
 
 public slots:
 
 private:
-    Ball *balls[2];
-    int score[2];
+
+    bool lock;
+
+    Ball *ball;
+    Player *player;
+    QTimer *timer;
+
+    float Sx, Sox, Vx, Sy, Soy, Vy, t;
 };
 
 #endif // GAME_H

@@ -38,90 +38,71 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this, SIGNAL(buttonStart()), ui->openGLWidget, SLOT(startMatch()));
     connect(this, SIGNAL(matchIsOver()), ui->openGLWidget, SLOT(finishMatch()));
 
-    connect(this, SIGNAL(buttonMovePressP1(int)), ui->openGLWidget, SLOT(movePlayer1(int)));
-    connect(this, SIGNAL(buttonMovePressP2(int)), ui->openGLWidget, SLOT(movePlayer2(int)));
-
-    counter = MIN(5);
+    counter = MIN(3) + 1;
 
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(updateTimerCount()));
 
+    connect(this, SIGNAL(buttonMovePress(int)), ui->openGLWidget->player1, SLOT(movePlayer(int)));
+    connect(ui->openGLWidget->player1, SIGNAL(takeGoal(int)), this, SLOT(addGoalLCD(int)));
+    connect(ui->openGLWidget->player2, SIGNAL(takeGoal(int)), this, SLOT(addGoalLCD(int)));
 }
 
-bool MainWindow::eventFilter(QObject *target, QEvent *e)
+
+void MainWindow::keyPressEvent(QKeyEvent* event)
 {
-    Q_UNUSED(target);
+    switch (event->key()) {
 
-    /*bool handled = false;
-    if ( e->type() == QEvent::KeyPress )
-    {
-        QKeyEvent *keyEvent = (QKeyEvent *)e;
+    case Qt::Key_Up:
+        emit buttonMovePress(-1);
+        break;
 
-        if ( keyEvent->key() == Qt::Key_Left )
-        {
-            iP1Direction = (iP1Direction == 0 ? -5 : 0);
-            handled = true;
+    case Qt::Key_Down:
+        emit buttonMovePress(1);
+        break;
+
+    case Qt::Key_Space:
+        if (started){
+            started = false;
+            timer->stop();
+            this->ui->labelStatus->setText(QString("O jogo parado!!! Precione ESPAÇO para reiniciar a partida"));
+        } else {
+            started = true;
+            timer->start(1000);
+            this->ui->labelStatus->setText(QString("Começa o jogo!!! Precione ESPAÇO para parar a partida"));
         }
-        else if ( keyEvent->key() == Qt::Key_Right )
-        {
-            iP1Direction  = (iP1Direction == 0 ? 5 : 0);
-            handled = true;
-        }
+        emit buttonStart();
+        break;
+
+    default:
+        QMainWindow::keyPressEvent(event);
+        break;
     }
-
-    return handled;*/
-
-    qDebug() << e->type() << target;
-
-    return true;
+    QMainWindow::keyPressEvent(event);
 }
 
-
-void MainWindow::keyPressEvent(QKeyEvent* event) {
-
-    if (!event->isAutoRepeat()) {
-        switch (event->key()) {
-
-        case Qt::Key_Up:
-            emit buttonMovePressP1(-1);
-            break;
-
-        case Qt::Key_Down:
-            emit buttonMovePressP1(1);
-            break;
-
-        case Qt::Key_W:
-            emit buttonMovePressP2(-1);
-            break;
-
-        case Qt::Key_S:
-            emit buttonMovePressP2(1);
-            break;
-
-        case Qt::Key_Space:
-            if (started){
-                started = false;
-                timer->stop();
-                this->ui->labelStatus->setText(QString("O jogo parado!!! Precione ESPAÇO para reiniciar."));
-            } else {
-                started = true;
-                timer->start(1000);
-                this->ui->labelStatus->setText(QString("Começa o jogo!!! Precione ESPAÇO para pausar."));
-            }
-            emit buttonStart();
-            break;
-
-        default:
-            break;
-        }
-    }
-    //qDebug()<< event->key() << event->type();
-}
 
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::addGoalLCD(int id)
+{
+    switch (id) {
+    case 2:
+        ui->lcdNumber1->display(ui->lcdNumber1->value() + 1);
+
+        break;
+
+    case 1:
+        ui->lcdNumber2->display(ui->lcdNumber2->value() + 1);
+        break;
+
+    default:
+        break;
+    }
 }
 
 
@@ -148,6 +129,16 @@ void MainWindow::updateTimerCount()
     if(counter == 0){
         timer->stop();
         emit matchIsOver();
+
+        QString resultado;
+        if (ui->lcdNumber1->value() > ui->lcdNumber2->value())
+            resultado = QString("Fim de Jogo! E o time do São Paulo vence o partida!");
+        else if (ui->lcdNumber1->value() < ui->lcdNumber2->value())
+            resultado = QString("Fim de Jogo! E o time do Corinthians vence a partida!");
+        else
+            resultado = QString("Fim de jogo! E a partida acaba empatada");
+
+        ui->labelStatus->setText(resultado);
         counter = 300;
     }
 }

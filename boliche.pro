@@ -33,8 +33,6 @@ QT += opengl
 QT += widgets
 QT += multimedia multimediawidgets
 
-QMAKE_CXXFLAGS += -std=c++11
-
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = boliche.bin
@@ -47,31 +45,25 @@ QT_DEBUG_PLUGINS = 1
 
 SOURCES += src/main.cpp\
         src/mainwindow.cpp \
-    src/vector3d.cpp \
-    src/ball.cpp \
-    src/particle.cpp \
+    src/engine/vector3d.cpp \
     src/engine/camera.cpp \
     src/engine/scene.cpp \
-    src/engine/phisics.cpp \
     src/engine/glwidget.cpp \
-    src/engine/game.cpp \
     src/engine/mouse3d.cpp \
     src/engine/spnav.c \
-    src/engine/object.cpp
+    src/engine/object.cpp \
+    src/engine/game.cpp
 
 HEADERS  += src/mainwindow.h \
-    src/particle.h \
-    src/ball.h \
-    src/vector3d.h \
+    src/engine/vector3d.h \
     src/engine/camera.h \
     src/engine/scene.h \
-    src/engine/phisics.h \
     src/engine/glwidget.h \
-    src/engine/game.h \
     src/engine/mouse3d.h \
     src/engine/spnav.h \
     src/engine/object.h \
-    src/utils.h
+    src/engine/game.h
+
 
 DESTDIR = bin
 OBJECTS_DIR = bin/.obj

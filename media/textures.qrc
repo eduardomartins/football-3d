@@ -9,5 +9,7 @@
         <file>textures/crowd.jpg</file>
         <file>textures/spfc.jpg</file>
         <file>textures/csc.jpg</file>
+        <file>textures/adidas_ball.jpg</file>
+        <file>textures/arch.jpg</file>
     </qresource>
 </RCC>
