@@ -35,13 +35,11 @@ QT += multimedia multimediawidgets
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = boliche.bin
+TARGET = football
 
 TEMPLATE = app
 
 LIBS += -lGLU -lGL
-
-QT_DEBUG_PLUGINS = 1
 
 SOURCES += src/main.cpp\
         src/mainwindow.cpp \
@@ -82,7 +80,6 @@ debug
 }
 
 FORMS += src/mainwindow.ui
-
 
 
 RESOURCES += \

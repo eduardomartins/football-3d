@@ -29,13 +29,15 @@ void Game::updateGame()
 
     t = (Sy - Soy)/ Vy;
 
-    if (t > 0.0) {
+    if (t >  0.0) {
 
         Sx = (Sox + Vx * t);
 
         int move = ((int) (Sx - player->position[0]) / 55.0);
 
-        if (abs(move) >= 2)
+        if (abs(move) >= 25)
+            emit updatePlayer((move < 0.0 ? -1.1 : 1.1));
+        else if (abs(move) >= 2)
             emit updatePlayer((move < 0.0 ? -1.0 : 1.0));
     }
 

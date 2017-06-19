@@ -12,6 +12,8 @@ GLWidget::GLWidget(QWidget *parent)
 
     lock = true;
 
+    rotate_camera = 0.0;
+
     camera = Camera();
     ball = new Ball(60.0);
     floor = new Floor(7200.0, 7200.0);
@@ -92,30 +94,31 @@ void GLWidget::initializeGL()
     mouse3d->start();
 }
 
-void GLWidget::startMatch()
+void GLWidget::startMatch(bool state)
 {
     angle = 0.0;
     anglev = 65.0;
     radius = 3000;
+    rotate_camera = 0.0;
 
-    lock = (lock ? false : true);
+    lock = state;
 
     ball->setLock(lock);
-
     player1->setLock(lock);
     player2->setLock(lock);
 
 
 }
 
-void GLWidget::finishMatch()
+void GLWidget::finishMatch(bool state)
 {
     angle = 45.0;
     anglev = 30.0;
+    rotate_camera = 0.5;
 
     ball->position.setX(0.0)->setY(0.0);
 
-    lock = true;
+    lock = !state;
 }
 
 
@@ -147,7 +150,12 @@ void GLWidget::draw()
     glFlush();
     glDisable(GL_TEXTURE_2D);
 
-    // Display
+    // camera
+
+    angle = angle + rotate_camera;
+
+    if (angle > 360)
+        angle = 0.0;
 
 }
 
@@ -202,12 +210,15 @@ void GLWidget::init()
 
     ball->start();
 
-    connect(ball, SIGNAL(onGoal(float,float,float)), player1, SLOT(ballOnGoal(float,float,float)));
-    connect(ball, SIGNAL(onGoal(float,float,float)), player2, SLOT(ballOnGoal(float,float,float)));
+    connect(ball, SIGNAL(onGoal(float,float)), player1, SLOT(ballOnGoal(float,float)));
+    connect(ball, SIGNAL(onGoal(float,float)), player2, SLOT(ballOnGoal(float,float)));
     connect(player1, SIGNAL(defendeBall(float,float)), ball, SLOT(ballWasDefended(float, float)));
     connect(player2, SIGNAL(defendeBall(float,float)), ball, SLOT(ballWasDefended(float, float)));
     connect(player1, SIGNAL(takeGoal(int)), ball, SLOT(repositBall(int)));
     connect(player2, SIGNAL(takeGoal(int)), ball, SLOT(repositBall(int)));
+
+    connect(player1, SIGNAL(updatePlayer()), player2, SLOT(restartPosition()));
+    connect(player2, SIGNAL(updatePlayer()), player1, SLOT(restartPosition()));
 
     quadric = gluNewQuadric();
 

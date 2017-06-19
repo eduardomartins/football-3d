@@ -152,10 +152,13 @@ public:
 signals:
     void defendeBall(float, float);
     void takeGoal(int);
+    void updateLCD(int);
+    void updatePlayer();
 
 public slots:
     void movePlayer(int);
-    void ballOnGoal(float, float, float);
+    void ballOnGoal(float, float);
+    void restartPosition();
 
 private:
 
@@ -182,7 +185,7 @@ public slots:
     void repositBall(int id);
 
 signals:
-    void onGoal(float, float, float);
+    void onGoal(float, float);
 
 private:
 

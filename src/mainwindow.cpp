@@ -25,7 +25,9 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#define MIN(A) A * 60
+#define MIN(A) A * 60 + 1
+
+#define TIME_MATCH MIN(5)
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -35,17 +37,24 @@ MainWindow::MainWindow(QWidget *parent) :
     this->setWindowState(Qt::WindowMaximized);
 
     started = false;
-    connect(this, SIGNAL(buttonStart()), ui->openGLWidget, SLOT(startMatch()));
-    connect(this, SIGNAL(matchIsOver()), ui->openGLWidget, SLOT(finishMatch()));
+    stopped = false;
 
-    counter = MIN(3) + 1;
+    counter = TIME_MATCH;
+    wait_conter = 5; // Espera 5 segundos
 
     timer = new QTimer(this);
+    wait = new QTimer(this);
+
     connect(timer, SIGNAL(timeout()), this, SLOT(updateTimerCount()));
+    connect(wait, SIGNAL(timeout()), this, SLOT(waitMakeGoal()));
+
+    connect(this, SIGNAL(buttonStart(bool)), ui->openGLWidget, SLOT(startMatch(bool)));
+    connect(this, SIGNAL(matchIsOver(bool)), ui->openGLWidget, SLOT(finishMatch(bool)));
+
+    connect(ui->openGLWidget->player1, SIGNAL(updateLCD(int)), this, SLOT(addGoalLCD(int)));
+    connect(ui->openGLWidget->player2, SIGNAL(updateLCD(int)), this, SLOT(addGoalLCD(int)));
 
     connect(this, SIGNAL(buttonMovePress(int)), ui->openGLWidget->player1, SLOT(movePlayer(int)));
-    connect(ui->openGLWidget->player1, SIGNAL(takeGoal(int)), this, SLOT(addGoalLCD(int)));
-    connect(ui->openGLWidget->player2, SIGNAL(takeGoal(int)), this, SLOT(addGoalLCD(int)));
 }
 
 
@@ -63,20 +72,28 @@ void MainWindow::keyPressEvent(QKeyEvent* event)
 
     case Qt::Key_Space:
         if (started){
-            started = false;
-            timer->stop();
-            this->ui->labelStatus->setText(QString("O jogo parado!!! Precione ESPAÇO para reiniciar a partida"));
+            if (stopped) {
+                wait->stop();
+                wait_conter = 5;
+                stopped = false;
+                timer->start(1000);
+                this->ui->labelStatus->setText(QString("Começa o jogo!!! Precione ESPAÇO para parar a partida"));
+            } else {
+                stopped = true;
+                timer->stop();
+                this->ui->labelStatus->setText(QString("O jogo parado!!! Precione ESPAÇO para reiniciar a partida"));
+
+            }
         } else {
             started = true;
+            stopped = false;
             timer->start(1000);
-            this->ui->labelStatus->setText(QString("Começa o jogo!!! Precione ESPAÇO para parar a partida"));
+            this->ui->labelStatus->setText(QString("Bola rolando!!! Precione ESPAÇO para parar a partida"));
         }
-        emit buttonStart();
+
+        emit buttonStart(stopped);
         break;
 
-    default:
-        QMainWindow::keyPressEvent(event);
-        break;
     }
     QMainWindow::keyPressEvent(event);
 }
@@ -86,18 +103,27 @@ void MainWindow::keyPressEvent(QKeyEvent* event)
 MainWindow::~MainWindow()
 {
     delete ui;
+    delete timer;
+    delete wait;
 }
 
 void MainWindow::addGoalLCD(int id)
 {
+    stopped = true;
+    timer->stop();
+    emit buttonStart(stopped);
+
+    wait->start(1000);
+
     switch (id) {
     case 2:
         ui->lcdNumber1->display(ui->lcdNumber1->value() + 1);
-
+        this->ui->labelStatus->setText(QString("O jogo parado!!! Precione ESPAÇO para reiniciar a partida"));
         break;
 
     case 1:
         ui->lcdNumber2->display(ui->lcdNumber2->value() + 1);
+        this->ui->labelStatus->setText(QString("O jogo parado!!! Precione ESPAÇO para reiniciar a partida"));
         break;
 
     default:
@@ -109,6 +135,7 @@ void MainWindow::addGoalLCD(int id)
 void MainWindow::updateLCD(int seconds)
 {
     int min, sec;
+
     if (seconds > 60){
         min = seconds/60;
     } else {
@@ -121,16 +148,41 @@ void MainWindow::updateLCD(int seconds)
 
 }
 
+void MainWindow::waitMakeGoal()
+{
+    this->ui->labelStatus->setText(QString("Goooool!!! Partida recomeça em %1...\n ou precione ESPAÇO para recomeçar").arg(QString::number(wait_conter)));
+    --wait_conter;
+
+    if (wait_conter == 0){
+        wait->stop();
+        wait_conter = 5;
+        stopped = false;
+        timer->start(1000);
+        emit buttonStart(stopped);
+        this->ui->labelStatus->setText(QString("Começa o jogo!!! Precione ESPAÇO para parar a partida"));
+    }
+
+}
+
+
 void MainWindow::updateTimerCount()
 {
     counter--;
     updateLCD(counter);
 
     if(counter == 0){
+
         timer->stop();
-        emit matchIsOver();
+
+
+        started = false;
+
+        emit matchIsOver(started);
+
+        stopped = false;
 
         QString resultado;
+
         if (ui->lcdNumber1->value() > ui->lcdNumber2->value())
             resultado = QString("Fim de Jogo! E o time do São Paulo vence o partida!");
         else if (ui->lcdNumber1->value() < ui->lcdNumber2->value())
@@ -138,8 +190,12 @@ void MainWindow::updateTimerCount()
         else
             resultado = QString("Fim de jogo! E a partida acaba empatada");
 
-        ui->labelStatus->setText(resultado);
-        counter = 300;
+        ui->labelStatus->setText(QString("%1\n Precione ESPAÇO para jogar uma nova partida").arg(resultado));
+
+        ui->lcdNumber1->display(0.0);
+        ui->lcdNumber2->display(0.0);
+
+        counter = TIME_MATCH;
     }
 }
 

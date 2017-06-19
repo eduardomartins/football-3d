@@ -55,13 +55,14 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-    bool started;
+    bool started, stopped;
     void updateLCD(int seconds);
 
 
 public slots:
 
     void addGoalLCD(int);
+    void waitMakeGoal();
     void updateTimerCount();
 
 protected:
@@ -71,14 +72,14 @@ protected:
 signals:
 
     void buttonMovePress(int);
-    void buttonStart();
-    void matchIsOver();
+    void buttonStart(bool);
+    void matchIsOver(bool);
 
 private:
 
-    int counter;
-    QTimer *timer;
+    int counter, wait_conter;
     Ui::MainWindow *ui;
+    QTimer *timer, *wait;
 };
 
 #endif // MAINWINDOW_H

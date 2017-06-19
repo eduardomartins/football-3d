@@ -361,7 +361,7 @@ void Player::draw()
 void Player::movePlayer(int sentido)
 {
     if (!lock()) {
-        position.setX(position.getX() + (sentido * 55.0));
+        position.setX(position.getX() + (sentido * 55.017));
 
         if (position.getX() > 875.0)
             position.setX(875.0);
@@ -371,23 +371,41 @@ void Player::movePlayer(int sentido)
     }
 }
 
+void Player::restartPosition()
+{
+    if (!lock()) {
+        position.setX(0);
+    }
+}
 
-void Player::ballOnGoal(float x, float y, float z)
+void Player::ballOnGoal(float x, float y)
 {
 
-    if ((position[1] < 0.0 ? y < position[1] : y > position[1])) // Bola passou ?
-    {
-        if (x >= (position[0] - base) * 1.2 && x <= (position[0] + base) * 1.2) {
+    float p1 = (position[0] - base * 1.25), p2 = (position[0] + base* 1.25);
+    bool pass = ( position[1] < 0.0 ? y < position[1] : y > position[1]);
+    if(pass){
 
-            if ((x <= position[0] - base * 0.75) || (x >=  position[0] + base * 0.75))
-                emit defendeBall(1.517, 0.517);
+        if (x > p1 && x < p2) {
+
+            if ((x <= position[0] - base * 0.85) || (x >=  position[0] + base * 0.85))
+                emit defendeBall(1.3217, 0.717);
             else if ((x <= position[0] - base * 0.3) || (x >=  position[0] + base * 0.3))
                 emit defendeBall(0.917, 1.17);
             else
-                emit defendeBall(1.0117, 1.0517);
+                emit defendeBall(1.117, 1.017);
 
-        } else {
+        } else  {
+            //qDebug() << "POSITION PLAYER" << id << "(" << position[0] << ", " << position[1] << ")";
+            //qDebug() << "INTERVALO" << id <<  "[" << p1 << ", " << p2 << "]";
+            //qDebug() << "POSITION BALL (" << x << ", " << y << ")";
+            //qDebug() << "ESTA NO INTERVALO DE X ?" << ((x > p1) && (x < p2));
+            //qDebug() << "PASSOU DE Y ?" << pass << "\n";
+
+            emit updatePlayer();
             emit takeGoal(id);
+            emit updateLCD(id);
+
+            position.setX(0.0);
         }
     }
 }
@@ -413,6 +431,29 @@ void Ball::ballWasDefended(float x, float y)
 {
     velocidade.setX(velocidade[0] * x);
     velocidade.setY(velocidade[1] * y);
+
+    float mag;
+
+    if (fabs(velocidade[0])/fabs(velocidade[1]) > 15.0) {
+        mag = sqrt(pow(velocidade[0], 2.0) + pow(velocidade[2], 2.0));
+
+        while (fabs(velocidade[0])/fabs(velocidade[1]) > 15.0) {
+            velocidade.setX(0.917 * (velocidade[0]/mag));
+            velocidade.setY(2.017 * (velocidade[1]/mag));
+        }
+
+
+    } else if (fabs(velocidade[1])/fabs(velocidade[0]) > 15.0) {
+
+        mag = sqrt(pow(velocidade[0], 2.0) + pow(velocidade[2], 2.0));
+
+        while (fabs(velocidade[1])/fabs(velocidade[0]) > 15.0) {
+            velocidade.setX(2.017 * (velocidade[0]/mag));
+            velocidade.setY(0.917 * (velocidade[1]/mag));
+        }
+
+    }
+
 }
 
 
@@ -421,20 +462,21 @@ void Ball::updatePosition()
 {
     if (!lock()) {
 
-        if (position.getX() > 1000.0 || position.getX() < -1000.0)
-            velocidade.setX(-1.015 * velocidade[0]);
+        //qDebug() << velocidade[0] << velocidade[1];
+
+        velocidade.setX(velocidade[0] + 0.001 * (velocidade[0]/fabs(velocidade[0])));
+        velocidade.setY(velocidade[1] + 0.001 * (velocidade[1]/fabs(velocidade[1])));
+
+        if (fabs(position.getX()) >= 1000.0)
+            velocidade.setX(-1.0157 * velocidade[0]);
 
         position.setX(position.getX() + velocidade.getX());
 
-        if (position.getY() > 1500.0 || position.getY() < -1500.0) {
-            emit onGoal(position[0], position[1], position[2]);
-            velocidade.setY(-1.015  * velocidade[1]);
-        }
-
-        if (fabs(velocidade[0]) < 1.0 || fabs(velocidade[1]) < 1.0) {
-            float mag = sqrt(pow(velocidade[0], 2.0) + pow(velocidade[2], 2.0));
-            velocidade.setX(mag * velocidade[0]/fabs(velocidade[0]));
-            velocidade.setY(mag * velocidade[1]/fabs(velocidade[1]));
+        if ((position[1] < -1500.0) || (position[1] > 1500.0)) {
+            emit onGoal(position[0], position[1]);
+            //setLock(true);
+            velocidade.setY(-1.0157  * velocidade[1]);
+            //setLock(false);
         }
 
         if (fabs(velocidade[0]) > 20.0)

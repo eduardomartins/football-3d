@@ -59,8 +59,8 @@ public slots:
     void setAngleV(int);
     void setRadius(int);
 
-    void startMatch();
-    void finishMatch();
+    void startMatch(bool);
+    void finishMatch(bool);
 
 signals:
 
@@ -91,7 +91,7 @@ private:
     float sens;
     float max_radius;
     float motion_angle;
-    float rotate;
+    float rotate, rotate_camera;
 
     GLint primitive;
     GLint view_w, view_h;
@@ -117,8 +117,10 @@ private:
     char auto_mode;
     char pivot_mode;
 
-    bool light_used[LIGHT_LIMIT];
     bool lock, started;
+    bool light_used[LIGHT_LIMIT];
+
+    QTimer *timer;
 
     Game *game;
     Ball *ball;
