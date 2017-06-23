@@ -3,14 +3,12 @@
 This respositório it's a Computer Graphic project (for study propose). Basic is a game like ping-pong.
 PS.: In this case football aka soccer.   
 
-## Getting Started
-
 
 ### Prerequisites
 
 What things you need to install the software and how to install them
 
-A C++ compiler also nedded 
+A C++ compiler also needed 
 ```
 sudo apt-get install build-essential
 ```
@@ -67,7 +65,7 @@ Video
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
 
 ## Acknowledgments
 
