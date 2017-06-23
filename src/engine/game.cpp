@@ -35,7 +35,9 @@ void Game::updateGame()
 
         int move = ((int) (Sx - player->position[0]) / 55.0);
 
-        if (abs(move) >= 25)
+        if (abs(move) >= 45)
+            emit updatePlayer((move < 0.0 ? -1.2 : 1.2));
+        else if (abs(move) >= 25)
             emit updatePlayer((move < 0.0 ? -1.1 : 1.1));
         else if (abs(move) >= 2)
             emit updatePlayer((move < 0.0 ? -1.0 : 1.0));
